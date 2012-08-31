@@ -1,0 +1,61 @@
+Make a new Solution Platform x64
+Be sure to set All Configuration each time the properties are edited
+
+Make a property sheet using View | Property Manager with the User Macro
+DAZSDKInstallDir C:\DAZ\DAZStudio4 SDK
+DAZStudioPluginDir C:\DAZ\DAZStudio4Pro64\plugins
+
+Make a filter Moc Files for Moc-generated files
+After they are generated, addtem to the filter
+
+Moc Configuration:
+
+x In Emacs (Needs to be run each time the header changes):
+x "C:\DAZ\DAZStudio4 SDK\bin\x64\moc" afirstpluginaction.h -o .\moc\afirstpluginaction_moc.cpp
+x "C:\DAZ\DAZStudio4 SDK\bin\x64\moc" afirstplugindlg.h -o .\moc\afirstplugindlg_moc.cpp
+
+In Properties for each header file:
+Custom Build Step | Command line:
+x "C:\DAZ\DAZStudio4 SDK\bin\$(PlatformName)\moc" "$(InputPath)" -o .\moc\$(InputName)_moc.cpp
+"$(DAZSDKInstallDir)\bin\$(PlatformName)\moc" "$(InputPath)" -o .\moc\$(InputName)_moc.cpp
+
+------------------------------------------------------------------------------
+
+Custom Build Step | Description:
+Moc'ing "$(InputFileName)"...
+
+Custom Build Step | Outputs: (Must be same as -o in Command line above)
+.\moc\$(InputName)_moc.cpp
+
+Configuration Properties | General | Output Directory
+$(SolutionDir)$(PlatformName)\$(ConfigurationName)
+
+Configuration Properties | General | Intermediate Directory
+$(PlatformName)\$(ConfigurationName)
+
+C++ | Additional Include Directories
+x C:\DAZ\DAZStudio4 SDK\include
+$(DAZSDKInstallDir)\include
+
+Resources | Additional Include Directories
+x C:\DAZ\DAZStudio4 SDK\include
+$(DAZSDKInstallDir)\include
+
+Linker | Additional Library Directories
+x C:\DAZ\DAZStudio4 SDK\lib\$(PlatformName)
+$(DAZSDKInstallDir)\lib\$(PlatformName)
+
+Linker | Enable Incremental Linking
+No (/INCREMENTAL:NO)
+
+Linker | Module Definition File
+$(InputName).def
+
+Linker | Input | Additional Dependencies
+dzcore.lib QtCore4.lib QtGui4.lib Qt3Support4.lib QtScript4.lib
+
+Build Events | Post Build Event | Command Line
+copy /Y "$(OutDir)\$(ProjectName).dll" "$(DAZStudioPluginDir)\$(ProjectName).dll"
+
+Build Events | Post Build Event | Description
+Copying $(OutDir)\$(ProjectName).dll to DAZ Studio plug-in directory $(DAZStudioPluginDir)...
