@@ -47,55 +47,55 @@ static const int c_minHeight = 150;
 bool compareMaterials(const QObject *obj1, const QObject *obj2);
 
 /**
-**/
+ **/
 DzSceneInfoPaneEx::DzSceneInfoPaneEx() :
-DzPane( "Scene Info Ex" ),
-m_refreshBlocked( false ), 
-m_totalVerts( 0 ),
-m_totalTris( 0 ),
-m_totalQuads( 0 ),
-m_showScene (false),
-m_showNodes (true),
-m_showSelected (false),
-m_showSelectedObject (false),
-m_showSelectedProperties (false),
-m_showMaterials( false )
+	DzPane( "Scene Info Ex" ),
+	m_refreshBlocked( false ), 
+	m_totalVerts( 0 ),
+	m_totalTris( 0 ),
+	m_totalQuads( 0 ),
+	m_showScene (false),
+	m_showNodes (true),
+	m_showSelected (false),
+	m_showSelectedObject (false),
+	m_showSelectedProperties (false),
+	m_showMaterials( false )
 {
-	// Declarations
+  // Declarations
 	int margin = style()->pixelMetric( DZ_PM_GeneralMargin );
 
-	// Define the layout for the pane
+  // Define the layout for the pane
 	QVBoxLayout *mainLayout = new QVBoxLayout();
 	mainLayout->setMargin( margin );
 	mainLayout->setSpacing( margin );
 
-	// Use a text browser for the output window - this supports basic html/rtf formatting
+  // Use a text browser for the output window - this supports basic html/rtf formatting
 	m_output = new QTextBrowser();
 	m_output->setObjectName( "SceneInfoExTxtBrwsr" );
 	m_output->setMinimumSize( c_minWidth, c_minHeight );
 
-	// Implement the context menu
+  // Implement the context menu
 	m_output->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect( m_output, SIGNAL(customContextMenuRequested(const QPoint &)),
-		this, SLOT(showContextMenu(const QPoint &)) );
+	  this, SLOT(showContextMenu(const QPoint &)) );
 
 	mainLayout->addWidget( m_output );
 
-	// Set the layout for the pane
+  // Set the layout for the pane
 	setLayout( mainLayout );
 
-	// Do an initial update of the scene stats
+  // Do an initial update of the scene stats
 	refresh();
 
-	// Listen for the node list in the scene to change so that we can update our information
+  // Listen for the node list in the scene to change so that we can update our information
 	connect( dzScene, SIGNAL(nodeListChanged()), this, SLOT(refresh()) );
 
-	// Listen for the primary selection to change so that we can update our information
+  // Listen for the primary selection to change so that we can update our information
 	connect( dzScene, SIGNAL(primarySelectionChanged(DzNode*)), this, SLOT(refreshInfo(DzNode*)) );
 
-	// Listen for file load operations so that we can block our refresh function from executing.
-	// During a scene load, the node list will change many times - we only want to refresh
-	// once at the end of the load, so that we do not slow down the file load.
+  // Listen for file load operations so that we can block our refresh function from executing.
+  // During a scene load, the node list will change many times - we only want to refresh
+  // once at the end of the load, so that we do not slow down the file load.
 	connect( dzScene, SIGNAL(sceneLoadStarting()), this, SLOT(blockRefresh()) );
 	connect( dzScene, SIGNAL(sceneClearStarting()), this, SLOT(blockRefresh()) );
 	connect( dzScene, SIGNAL(sceneLoaded()), this, SLOT(unblockRefresh()) );
@@ -105,26 +105,26 @@ m_showMaterials( false )
 }
 
 /**
-**/
+ **/
 DzSceneInfoPaneEx::~DzSceneInfoPaneEx() {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::showContextMenu(const QPoint &pos) {
 	QMenu menu;
 	QString sceneText = m_showScene ? 
-		"Hide Scene" : "Show Scene";
+	  "Hide Scene" : "Show Scene";
 	QString nodesText = m_showNodes ? 
-		"Hide Nodes" : "Show Nodes";
+	  "Hide Nodes" : "Show Nodes";
 	QString selectedText = m_showSelected ? 
-		"Hide Selected" : "Show Selected";
+	  "Hide Selected" : "Show Selected";
 	QString objectText = m_showSelectedObject ? 
-		"Hide Selected Object" : "Show Selected Object";
+	  "Hide Selected Object" : "Show Selected Object";
 	QString propertiesText = m_showSelectedProperties ? 
-		"Hide Selected Properties" : "Show Selected Properties";
+	  "Hide Selected Properties" : "Show Selected Properties";
 	QString materialsText = m_showMaterials ? 
-		"Hide Materials" : "Show Materials";
+	  "Hide Materials" : "Show Materials";
 
 	QAction *sceneAction = menu.addAction(sceneText);
 	QAction *nodesAction = menu.addAction(nodesText);
@@ -164,25 +164,25 @@ void DzSceneInfoPaneEx::showContextMenu(const QPoint &pos) {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::blockRefresh() {
-	// A scene file is being loaded - block the refresh functions
+  // A scene file is being loaded - block the refresh functions
 	m_refreshBlocked = true;
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::unblockRefresh() {
-	// A scene file just finished loading - unblock the refresh functions, 
-	// and force an update of our data.
+  // A scene file just finished loading - unblock the refresh functions, 
+  // and force an update of our data.
 	m_refreshBlocked = false;
 	refresh();
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::getNodeInfo( const DzNode *node, int &numVerts, int &numTris, int &numQuads ) {
-	// Collect information about the node's geometry
+  // Collect information about the node's geometry
 	DzObject	*obj = node->getObject();
 	DzShape		*shape = obj ? obj->getCurrentShape() : NULL;
 	DzGeometry	*geom = shape ? shape->getGeometry() : NULL;
@@ -202,31 +202,31 @@ void DzSceneInfoPaneEx::getNodeInfo( const DzNode *node, int &numVerts, int &num
 
 		for( i = 0; i < nFacets; i++ ) {
 			if( facets[i].isQuad() )
-				numQuads++;
+			  numQuads++;
 			else
-				numTris++;
+			  numTris++;
 		}
 	}
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::refresh() {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 
 	int	numVerts, numTris, numQuads;
 	DzNodeListIterator nodeIter( dzScene->nodeListIterator() );
 
-	// Clear out any previous data
+  // Clear out any previous data
 	m_output->clear();
 	m_totalVerts = 0;
 	m_totalTris = 0;
 	m_totalQuads = 0;
 
-	// Iterate over all the nodes in the scene and collect data for them
+  // Iterate over all the nodes in the scene and collect data for them
 	while( nodeIter.hasNext() ) {
 		getNodeInfo( nodeIter.next(), numVerts, numTris, numQuads );
 		m_totalVerts += numVerts;
@@ -234,125 +234,125 @@ void DzSceneInfoPaneEx::refresh() {
 		m_totalQuads += numQuads;
 	}
 
-	// Ignore signals during scene load
+  // Ignore signals during scene load
 	if( m_refreshBlocked ) {
 		return;
 	}
 
-	// Refresh the output
+  // Refresh the output
 	refreshInfo( dzScene->getPrimarySelection() );
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::refreshInfo( DzNode *node ) {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 
-	// Clear out any previous data
+  // Clear out any previous data
 	m_output->clear();
 
-	// Write data for the scene
+  // Write data for the scene
 	if(m_showScene) {
 		writeSceneInfo();
 	}
 
-	// Write data for the scene nodes
+  // Write data for the scene nodes
 	if(m_showNodes) {
 		writeNodes();
 	}
 
-	// Write data for the primary selection
+  // Write data for the primary selection
 	if(m_showSelected) {
 		writeSelectedNode( dzScene->getPrimarySelection() );
 	}
 
-	// Write data for the object associated with the node
+  // Write data for the object associated with the node
 	if(m_showSelectedObject) {
 		writeSelectedObjectInfo(node);
 	}
 
-	// Write data for the properties associated with the node
+  // Write data for the properties associated with the node
 	if(m_showSelectedProperties) {
 		writeSelectedPropertyInfo(node);
 	}
 
-	// Write the materials
+  // Write the materials
 	if(m_showMaterials) {
 		writeMaterialInfo();
 	}
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeSceneInfo() {
 	QString	html;
 
 #if 0
-	// DEBUG
-	// Context menu
+  // DEBUG
+  // Context menu
 	DzActionMenu *menu = getOptionsMenu();
 	menu->getNumItems();
 	if(menu) {
 		html += QString( "<b>Context Menu : Items=%1</b><br>" )
-			.arg( menu->getNumItems() );
+		  .arg( menu->getNumItems() );
 	}
 #endif
 
-	// DEBUG
-	// SDK Version
+  // DEBUG
+  // SDK Version
 	html += QString( "<b>DAZ SDK Version : %1.%2.%3.%4</b><br>" )
-		.arg( DZ_VERSION_MAJOR )
-		.arg( DZ_VERSION_MINOR )
-		.arg( DZ_VERSION_REV )
-		.arg( DZ_VERSION_BUILD );
+	  .arg( DZ_VERSION_MAJOR )
+	  .arg( DZ_VERSION_MINOR )
+	  .arg( DZ_VERSION_REV )
+	  .arg( DZ_VERSION_BUILD );
 
-	// DEBUG
-	// QT Version
+  // DEBUG
+  // QT Version
 	const char *qtVersion = qVersion();
 	html += QString( "<b>QT Version : %1</b><br><br>" ).arg( qtVersion );
 
-	// Generate the scene info table:
+  // Generate the scene info table:
 	html += "<b>Scene Items : </b><br><table>";
 	html += QString( "<tr><td>Nodes : </td><td>%1</td></tr>" )
-		.arg( dzScene->getNumNodes() );
+	  .arg( dzScene->getNumNodes() );
 	html += QString( "<tr><td>Lights : </td><td>%1</td></tr>" )
-		.arg( dzScene->getNumLights() );
+	  .arg( dzScene->getNumLights() );
 	html += QString( "<tr><td>Cameras : </td><td>%1</td></tr>" )
-		.arg( dzScene->getNumCameras() );
+	  .arg( dzScene->getNumCameras() );
 	html += QString( "<tr><td>World-Space Modifiers : </td><td>%1</td></tr>" )
-		.arg( dzScene->getNumWSModifiers() );
+	  .arg( dzScene->getNumWSModifiers() );
 	html += "</table><br>";
 
-	// Generate the scene geometry table:
+  // Generate the scene geometry table:
 	html += "<br>";
 	html += "<b>Scene Geometry : </b><br><table>";
 	html += QString( "<tr><td>Total Vertices : </td><td>%1</td></tr>" )
-		.arg( m_totalVerts );
+	  .arg( m_totalVerts );
 	html += QString( "<tr><td>Total Triangles : </td><td>%1</td></tr>" )
-		.arg( m_totalTris );
+	  .arg( m_totalTris );
 	html += QString( "<tr><td>Total Quads : </td><td>%1</td></tr>" )
-		.arg( m_totalQuads );
+	  .arg( m_totalQuads );
 	html += QString( "<tr><td>Total Faces : </td><td>%1</td></tr>" )
-		.arg( m_totalTris + m_totalQuads );
+	  .arg( m_totalTris + m_totalQuads );
 	html += "</table><br>";
 
 	m_output->append( html );
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeNodes() {
 	QString	html;
 
-	// Generate the nodes table
+  // Generate the nodes table
 	int nNodes = dzScene->getNumNodes();
 	html += QString( "<b>Nodes : %1</b><br><table>" )
-		.arg( nNodes );
+	  .arg( nNodes );
 
-	// Iterate over all the nodes in the scene
+  // Iterate over all the nodes in the scene
 	DzNodeListIterator nodeIter( dzScene->nodeListIterator() );
 	DzNode *node = NULL;
 	DzSceneAssetFileInfo fileInfo = NULL;
@@ -360,44 +360,44 @@ void DzSceneInfoPaneEx::writeNodes() {
 		node = nodeIter.next();
 		fileInfo = node->getAssetFileInfo();
 		html += QString( "<tr><td>%1 : </td><td>%2</td></tr>" )
-			.arg( node->getLabel() )
-			.arg( fileInfo.getUri().getFilePath() );
+		  .arg( node->getLabel() )
+		  .arg( fileInfo.getUri().getFilePath() );
 	}
 	html += "</table><br>";
 
-	// Iterate over all the lights in the scene
+  // Iterate over all the lights in the scene
 	int nLights = dzScene->getNumLights();
 	html += "<br>";
 	html += QString( "<b>Lights : %1</b><br><table>" )
-		.arg( nLights );
+	  .arg( nLights );
 	DzLightListIterator lightIter( dzScene->lightListIterator() );
 	DzLight *light = NULL;
 	while( lightIter.hasNext() ) {
 		light = lightIter.next();
 		html += QString( "<tr><td>%1 : </td><td>%2 %3 %4</td><td>%5 %6</td></tr>" )
-			.arg( light->getLabel() )
-			.arg(light->getDiffuseColor().red())
-			.arg(light->getDiffuseColor().green())
-			.arg(light->getDiffuseColor().blue())
-			.arg( light->isAreaLight()?"Area":"" )
-			.arg( light->isDirectional()?"Directional":"" );
+		  .arg( light->getLabel() )
+		  .arg(light->getDiffuseColor().red())
+		  .arg(light->getDiffuseColor().green())
+		  .arg(light->getDiffuseColor().blue())
+		  .arg( light->isAreaLight()?"Area":"" )
+		  .arg( light->isDirectional()?"Directional":"" );
 	}
 	html += "</table><br>";
 
-	// Iterate over all the cameras in the scene
+  // Iterate over all the cameras in the scene
 	int nCameras = dzScene->getNumCameras();
 	html += "<br>";
 	html += QString( "<b>Cameras : %1</b><br><table>" )
-		.arg( nCameras );
+	  .arg( nCameras );
 	DzCameraListIterator cameraIter( dzScene->cameraListIterator() );
 	DzCamera *camera = NULL;
 	while( cameraIter.hasNext() ) {
 		camera = cameraIter.next();
 		html += QString( "<tr><td>%1 : </td><td>Focal Distance %2</td>"
-			"<td>Focal Length %3 mm</td></tr>" )
-			.arg( camera->getLabel() )
-			.arg( camera->getFocalDistance() )
-			.arg( camera->getFocalLength() );
+		  "<td>Focal Length %3 mm</td></tr>" )
+		  .arg( camera->getLabel() )
+		  .arg( camera->getFocalDistance() )
+		  .arg( camera->getFocalLength() );
 	}
 	html += "</table><br>";
 
@@ -405,10 +405,10 @@ void DzSceneInfoPaneEx::writeNodes() {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 
@@ -416,11 +416,11 @@ void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 	QString	html;
 
 	if( node ) {
-		// Get the stats for the primary selection
+	  // Get the stats for the primary selection
 		getNodeInfo( node, tNumVerts, tNumTris, tNumQuads );
 
 		if( node->inherits( "DzSkeleton" ) ) {
-			// If the primary selection is a figure, add the stats for all the bones also
+		  // If the primary selection is a figure, add the stats for all the bones also
 			DzBoneList bones;
 			int	i, n, numVerts, numTris, numQuads;
 
@@ -433,7 +433,7 @@ void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 			}
 		}
 
-		// Write the html output for the primary selection stats
+	  // Write the html output for the primary selection stats
 		html += "<b>Primary Selection : </b><br><table>";
 		html += QString( "<tr><td>Name : </td><td>%1</td></tr>" ).arg( node->objectName() );
 		html += QString( "<tr><td>Label : </td><td>%1</td></tr>" ).arg( node->getLabel() );
@@ -446,9 +446,9 @@ void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 		html += QString( "<tr><td>Properties : </td><td>%1</td></tr>" ).arg( node->getNumProperties() );
 		html += QString( "<tr><td>Private Properties : </td><td>%1</td></tr>" ).arg( node->getNumPrivateProperties() );
 		html += QString( "<tr><td>Source : </td><td>%1</td></tr>" )
-			.arg( node->getSource().getFilePath() );
+		  .arg( node->getSource().getFilePath() );
 		html += QString( "<tr><td>File Path : </td><td>%1</td></tr>" )
-			.arg( node->getAssetFileInfo().getUri().getFilePath() );
+		  .arg( node->getAssetFileInfo().getUri().getFilePath() );
 		html += QString( "<tr><td>Vertices : </td><td>%1</td></tr>" ).arg( tNumVerts );
 		html += QString( "<tr><td>Triangles : </td><td>%1</td></tr>" ).arg( tNumTris );
 		html += QString( "<tr><td>Quads : </td><td>%1</td></tr>" ).arg( tNumQuads );
@@ -456,7 +456,7 @@ void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 		html += "</table><br>";
 		m_output->append( html );
 	} else {
-		// No primary selection
+	  // No primary selection
 		html += "<br>";
 		html += "<b>Primary Selection : </b>None<br>";
 		m_output->append( html );
@@ -464,10 +464,10 @@ void DzSceneInfoPaneEx::writeSelectedNode( DzNode *node ) {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 	if(!node) {
@@ -477,7 +477,7 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 	QString	html;
 	DzObject *obj = node ->getObject();
 	html += QString( "<b>Primary Selection - Object : %1</b><br>" )
-		.arg( obj ? "" : "No Object" );
+	  .arg( obj ? "" : "No Object" );
 	if(obj == NULL) {
 		m_output->append( html );
 		return;
@@ -486,7 +486,7 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 	int nShapes = obj->getNumShapes();
 	html += "<table>";
 	html += QString( "<tr><td>Total Shapes : </td><td>%1</td></tr>" )
-		.arg( nShapes );
+	  .arg( nShapes );
 	DzShape *shape = NULL;
 	DzMaterial *material = NULL;
 	DzTexture *texture = NULL;
@@ -500,7 +500,7 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 		materialsList0 = shape->getAllMaterials();
 		nMaterials = materialsList0.count();
 
-		// Make a new QObjectList and sort it
+	  // Make a new QObjectList and sort it
 		QObjectList materialsList;
 		for(int j = 0; j < nMaterials; j++) {
 			material = (DzMaterial *)materialsList0[j];
@@ -509,8 +509,8 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 		qSort(materialsList.begin(), materialsList.end(), compareMaterials);
 
 		html += QString( "<tr><td>Shape %1 : </td><td>Materials : %2</td></tr>" )
-			.arg( i )
-			.arg(nMaterials);
+		  .arg( i )
+		  .arg(nMaterials);
 		for(int j = 0; j < nMaterials; j++) {
 			material = (DzMaterial *)materialsList[j];
 			texture = material->getColorMap();
@@ -519,30 +519,30 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 				fileName = texture->getFilename();
 			}
 			if(fileName.isEmpty()) {
-				// Show diffuse color
+			  // Show diffuse color
 				html += QString( "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;%1 : </td><td>Diffuse : %2 %3 %4</td></tr>" )
-					.arg( material->getName() )
-					.arg(material->getDiffuseColor().red())
-					.arg(material->getDiffuseColor().green())
-					.arg(material->getDiffuseColor().blue());
+				  .arg( material->getName() )
+				  .arg(material->getDiffuseColor().red())
+				  .arg(material->getDiffuseColor().green())
+				  .arg(material->getDiffuseColor().blue());
 			} else {
-				// Show filename
+			  // Show filename
 				html += QString( "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;%1 : </td><td>%2</td></tr>" )
-					.arg( material->getName() )
-					.arg(fileName);
+				  .arg( material->getName() )
+				  .arg(fileName);
 			}
 		}
 #else
-		// The preferred way, but isn't working
+	  // The preferred way, but isn't working
 		DzMaterialPtrList matPtrs = NULL;
 		shape->getAllMaterials(matPtrs);
 		html += QString( "<tr><td>Shape %1 : </td><td>Count %2</td></tr>" )
-			.arg( i )
-			.arg(matPtrs.count());
+		  .arg( i )
+		  .arg(matPtrs.count());
 		for(int j = 0; j < matPtrs.count(); j++) {
 			material = (DzMaterial *)matPtrs[j];
 			html += QString( "<tr><td>%1 : </td><td></td></tr>" )
-				.arg( material->getName() );
+			  .arg( material->getName() );
 		}
 #endif
 	}
@@ -551,10 +551,10 @@ void DzSceneInfoPaneEx::writeSelectedObjectInfo( DzNode *node ) {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeMaterialInfo() {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 
@@ -563,7 +563,7 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 	QString	html;
 	html += QString( "<b>All Materials : %1</b><br><table>" ).arg( nMaterials );
 
-	// Make a QObjectList of the materials and sort it
+  // Make a QObjectList of the materials and sort it
 	QObjectList materialsList;
 	DzMaterial *material = NULL;
 	for(int j = 0; j < nMaterials; j++) {
@@ -580,8 +580,8 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 		material = (DzMaterial *)materialsList[j];
 		if(material == NULL) {
 			html += QString( "<tr><td>%1 : </td><td>%2</td></tr>" )
-				.arg(j)
-				.arg( "NULL" );
+			  .arg(j)
+			  .arg( "NULL" );
 			continue;
 		}
 
@@ -593,11 +593,11 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 			name = "<Null>";
 		}
 		html += QString( "<tr><td>%1 [%2] : </td><td>%3</td></tr>" )
-			.arg(j)
-			.arg(material->getIndex())
-			.arg( name );
+		  .arg(j)
+		  .arg(material->getIndex())
+		  .arg( name );
 
-		// Color map
+	  // Color map
 		texture = material->getColorMap();
 		fileName = QString();
 		if(texture) {
@@ -605,10 +605,10 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 		}
 		if(!fileName.isEmpty()) {
 			html += QString( "<tr><td></td><td>Color File : </td><td>%2 : </td></tr>" )
-				.arg(fileName);
+			  .arg(fileName);
 		}
 
-		// Opacity map
+	  // Opacity map
 		texture = material->getOpacityMap();
 		fileName = QString();
 		if(texture) {
@@ -616,10 +616,10 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 		}
 		if(!fileName.isEmpty()) {
 			html += QString( "<tr><td></td><td>Opacity File : </td><td>%2 : </td></tr>" )
-				.arg(fileName);
+			  .arg(fileName);
 		}
 
-		// Baked map
+	  // Baked map
 		texture = material->getBakedMap();
 		fileName = QString();
 		if(texture) {
@@ -627,15 +627,15 @@ void DzSceneInfoPaneEx::writeMaterialInfo() {
 		}
 		if(!fileName.isEmpty()) {
 			html += QString( "<tr><td></td><td>Baked File : </td><td>%2 : </td></tr>" )
-				.arg(fileName);
+			  .arg(fileName);
 		}
 
-		// Diffuse color
+	  // Diffuse color
 		color = material->getDiffuseColor();
 		html += QString( "<tr><td></td><td>Diffuse Color : </td><td>%1 %2 %3</td></tr>" )
-			.arg(color.red())
-			.arg(color.green())
-			.arg(color.blue());
+		  .arg(color.red())
+		  .arg(color.green())
+		  .arg(color.blue());
 	}
 
 	html += "</table><br>";
@@ -651,11 +651,11 @@ bool compareMaterials(const QObject *obj1, const QObject *obj2) {
 }
 
 /**
-**/
+ **/
 void DzSceneInfoPaneEx::writeSelectedPropertyInfo( DzNode *node )
 {
 	if( m_refreshBlocked ) {
-		// Ignore signals during scene load
+	  // Ignore signals during scene load
 		return;
 	}
 	if(!node) {
@@ -664,7 +664,7 @@ void DzSceneInfoPaneEx::writeSelectedPropertyInfo( DzNode *node )
 
 	QString	html;
 
-	// Properties
+  // Properties
 	int nProperties = node->getNumProperties();
 	html += QString( "<b>Primary Selection - Properties : %1</b><br><table>" ).arg( nProperties );
 
@@ -672,14 +672,14 @@ void DzSceneInfoPaneEx::writeSelectedPropertyInfo( DzNode *node )
 	DzProperty *prop = NULL;
 	while( propIter.hasNext() ) {
 		prop = propIter.next();
-		// Could consider getSource()
+	  // Could consider getSource()
 		html += QString( "<tr><td>%1 : </td><td>%2</td></tr>" )
-			.arg( prop->getLabel() )
-			.arg( prop->getPath() );
+		  .arg( prop->getLabel() )
+		  .arg( prop->getPath() );
 	}
 	html += "</table><br>";
 
-	// Private properties
+  // Private properties
 	nProperties = node->getNumPrivateProperties();
 	html += "<br>";
 	html += QString( "<b>Primary Selection - Private Properties : %1</b><br><table>" ).arg( nProperties );
@@ -688,8 +688,8 @@ void DzSceneInfoPaneEx::writeSelectedPropertyInfo( DzNode *node )
 	while( privPropIter.hasNext() ) {
 		prop = privPropIter.next();
 		html += QString( "<tr><td>%1 : </td><td>%2</td></tr>" )
-			.arg( prop->getLabel() )
-			.arg( prop->getPath() );
+		  .arg( prop->getLabel() )
+		  .arg( prop->getPath() );
 	}
 	html += "</table><br>";
 
