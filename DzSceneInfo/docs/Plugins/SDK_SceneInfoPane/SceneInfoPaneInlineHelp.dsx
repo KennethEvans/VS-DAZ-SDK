@@ -1,0 +1,18 @@
+<DAZStudioHelpFile Version="1.0" >
+	<inlineHelp>
+		<helpText description="Scene Info" name="DzSceneInfoPaneAction" >
+			<toolTip>Click here to show or hide the Scene Info Pane.</toolTip>
+			<statusTip>Click here to show or hide the Scene Info Pane.</statusTip>
+			<whatsThis>
+				<![CDATA[<b>Scene Info:</b><br>Click here to show or hide the Scene Info Pane.]]>
+			</whatsThis>
+		</helpText>
+		<helpText description="Scene Info" name="SceneInfoTxtBrwsr" >
+			<toolTip>This pane displays information about the scene and your current selection.</toolTip>
+			<statusTip>This pane displays information about the scene and your current selection.</statusTip>
+			<whatsThis>
+				<![CDATA[<b>Scene Info:</b><br>This plugin is a very simple example of extending the DAZ Studio interface by inheriting from the DzPane class. Plugins that need a persistent interface where the user is still able to interact with the rest of the DAZ Studio interface should implement their interface as a DzPane subclass.<br><br>In this example, we provide a simple HTML-based display of general information about the scene contents and the current selection. This pane also updates itself whenever the scene or primary selection is changed so that the display reflects the contents of the scene in "real-time".]]>
+			</whatsThis>
+		</helpText>
+	</inlineHelp>
+</DAZStudioHelpFile>

@@ -1,0 +1,18 @@
+<DAZStudioHelpFile Version="1.0" >
+	<inlineHelp>
+		<helpText description="Hello World!" name="DzAFirstPluginAction" >
+			<toolTip>Click here to display "A First Plugin : Dialog".</toolTip>
+			<statusTip>Click here to display "A First Plugin : Dialog".</statusTip>
+			<whatsThis>
+				<![CDATA[<b>Hello World!:</b><br>Click here to display "A First Plugin : Dialog" to the user.]]>
+			</whatsThis>
+		</helpText>
+		<helpText description="Hello World Label" name="AFirstPluginDlgHelloWorldLbl" >
+			<toolTip>The only purpose of this label is to display "Hello, World!" to the user.</toolTip>
+			<statusTip>The only purpose of this label is to display "Hello, World!" to the user.</statusTip>
+			<whatsThis>
+				<![CDATA[<b>Hello World Label:</b><br>The only purpose of this label is to display "Hello, World!" to the user.]]>
+			</whatsThis>
+		</helpText>
+	</inlineHelp>
+</DAZStudioHelpFile>

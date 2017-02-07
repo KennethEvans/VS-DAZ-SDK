@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="DAZ SDK"
+	>
+	<UserMacro
+		Name="DAZSDKInstallDir"
+		Value="C:\DAZ\DAZStudio4 SDK"
+	/>
+	<UserMacro
+		Name="DAZStudioPluginDir"
+		Value="C:\DAZ\DAZ 3D\DAZStudio4\plugins"
+	/>
+</VisualStudioPropertySheet>

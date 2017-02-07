@@ -1,0 +1,9 @@
+<DAZStudioHelpFile Version="1.0" >
+	<filterSection>
+		<toc>
+			<section title="SDK Example : A First Plugin">
+				<section title="Read Me" ref="AFirstPluginREADME.htm"/>
+			</section>
+		</toc>
+	</filterSection>
+</DAZStudioHelpFile>

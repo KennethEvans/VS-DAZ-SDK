@@ -1,13 +1,13 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'afirstpluginaction.h'
 **
-** Created: Wed Dec 21 22:55:56 2016
+** Created: Sat Aug 25 18:58:48 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../afirstpluginaction.h"
+#include "afirstpluginaction.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'afirstpluginaction.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63

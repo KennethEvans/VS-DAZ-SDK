@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <DAZSDKInstallDir>C:\DAZ\DAZStudio4 SDK</DAZSDKInstallDir>
+    <DAZStudioPluginDir>C:\DAZ\DAZ 3D\DAZStudio4\plugins</DAZStudioPluginDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="DAZSDKInstallDir">
+      <Value>$(DAZSDKInstallDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="DAZStudioPluginDir">
+      <Value>$(DAZStudioPluginDir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
