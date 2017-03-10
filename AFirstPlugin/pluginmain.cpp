@@ -32,7 +32,7 @@ Plugin Definition
 This macro creates the plugin definition, and the functions that are needed
 for DAZ Studio to load our plugin.
 **/
-DZ_PLUGIN_DEFINITION( "A First Plugin (SDK Example)" );
+DZ_PLUGIN_DEFINITION( "A First Plugin" );
 
 /**
 This macro sets the author string for the plugin

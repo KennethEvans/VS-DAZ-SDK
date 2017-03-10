@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'afirstplugindlg.h'
 **
-** Created: Wed Dec 21 22:55:56 2016
+** Created: Thu Mar 9 21:14:41 2017
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
